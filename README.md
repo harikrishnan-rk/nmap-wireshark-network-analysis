@@ -76,54 +76,106 @@ Baseline evidence includes:
 
 The project is divided into three progressive experiments.
 
-## 01 — Basic Host Discovery
+## [01 — Basic Host Discovery](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis/tree/main/experiments/01-basic-host-discovery)
 
 The first experiment focuses on identifying an active host on the lab network.
 
-**Objective:**
+### Objective
 
-* Discover the target system
-* Confirm network reachability
+* Discover the Windows 11 target using Nmap
+* Confirm that the target is active
 * Observe the traffic generated during discovery
+* Correlate the Nmap result with packet-level evidence
 
-📁 **Experiment:**
-[`experiments/01-basic-host-discovery/`](experiments/01-basic-host-discovery/)
+The experiment used:
 
----
+```bash
+nmap -sn 192.168.100.20
+```
 
-## 02 — Port Scanning
+The Wireshark capture showed an **ARP request and ARP reply** between the two systems, with the MAC address observed in the ARP response matching the MAC address reported by Nmap.
 
-The second experiment examines the ports exposed by the Windows 11 target.
+This demonstrates an important distinction:
 
-**Objective:**
+* **ARP** is used for local IP-to-MAC address resolution on the local network.
+* **ICMP** is another mechanism that can be used for host discovery, but it is not the only mechanism Nmap can use.
 
-* Identify open ports
-* Understand the purpose of port scanning
-* Capture and examine the related network traffic
-
-📁 **Experiment:**
-[`experiments/02-port-scanning/`](experiments/02-port-scanning/)
 
 ---
 
-## 03 — Service Detection
+## [02 — Port Scanning](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis/tree/main/experiments/02-port-scanning)
 
-The third experiment builds on port scanning by examining the services associated with discovered ports.
+The second experiment examines TCP ports exposed by the Windows 11 target.
 
-**Objective:**
+### Objective
 
-* Identify services running on discovered ports
-* Compare Nmap results with captured traffic
-* Understand how service detection generates network activity
+* Identify open TCP ports
+* Understand TCP port scanning
+* Observe Nmap TCP probes
+* Correlate Nmap results with Wireshark traffic
 
-📁 **Experiment:**
-[`experiments/03-service-detection/`](experiments/03-service-detection/)
+The experiment included a controlled Windows Firewall comparison.
+
+With the firewall enabled, the initial scan showed:
+
+```text
+1000 filtered TCP ports
+```
+
+After temporarily disabling the relevant firewall profile for validation, the same scan identified:
+
+```text
+135/tcp  open  msrpc
+139/tcp  open  netbios-ssn
+445/tcp  open  microsoft-ds
+```
+
+The remaining ports responded with TCP resets and were classified as closed.
+
+The firewall configuration was restored after the test.
+
+---
+
+## [03 — Service & Version Detection](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis/tree/main/experiments/03-service-detection)
+
+The third experiment builds on port scanning by examining the services associated with the discovered ports.
+
+### Objective
+
+* Identify services running on open TCP ports
+* Use Nmap service and version detection
+* Observe how firewall filtering affects service detection
+* Compare Nmap results with Wireshark traffic
+
+The investigated ports were:
+
+```text
+135/tcp
+139/tcp
+445/tcp
+```
+
+The service-detection scan used:
+
+```bash
+nmap -sV -p 135,139,445 192.168.100.20
+```
+
+With Windows Defender Firewall enabled, the investigated ports were reported as filtered.
+
+After temporarily disabling the firewall for controlled validation, Nmap received responses and identified:
+
+* `135/tcp` — Microsoft Windows RPC
+* `139/tcp` — Microsoft Windows netbios-ssn
+* `445/tcp` — microsoft-ds
+
+The firewall was restored after the test.
 
 ---
 
 # 📡 Nmap + Wireshark Analysis
 
-A key part of this project is comparing two different views of the same network activity:
+A key part of this project is comparing two views of the same network activity:
 
 ```text
 Nmap
@@ -139,27 +191,27 @@ Packet Analysis
 Compare Results
 ```
 
-**Nmap** provides the scan results.
+Nmap provides the scan results.
 
-**Wireshark** provides packet-level visibility into the traffic generated during the scan.
+Wireshark provides packet-level visibility into the traffic generated during the scan.
 
-Using both tools provides a better understanding of what happens on the network instead of relying only on the final Nmap output.
+The firewall comparison also demonstrated how filtering can change the packet responses visible to the scanner and therefore change Nmap's interpretation of port state and service availability.
 
 ---
 
 # 🤝 Collaboration
 
-The project was completed using **individual lab environments**.
+The project was completed using individual lab environments.
 
 The three participants are:
 
-* 👨‍💻 [Hari Krishnan R K](https://github.com/harikrishnan-rk)
-* 👨‍💻 [Manu P Nair](https://github.com/manunair16)
-* 👨‍💻 [Varun M Nair](https://github.com/varunmnair95)
+* 👨‍💻 [Hari Krishnan R K](https://github.com/harikrishnan-rk/)
+* 👨‍💻 [Manu P Nair](https://github.com/manunair16/)
+* 👨‍💻 [Varun M Nair](https://github.com/varunmnair95/)
 
 Each participant maintains a separate repository and lab setup.
 
-Collaboration may include:
+Collaboration included:
 
 * Sharing approaches
 * Discussing observations
@@ -168,22 +220,28 @@ Collaboration may include:
 
 The implementation and evidence in this repository represent **my own lab work**.
 
+### Participant Repositories
+
+* [Hari Krishnan R K — Nmap & Wireshark Network Analysis](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis)
+* [Manu P Nair — Nmap & Wireshark Network Analysis](https://github.com/manunair16/nmap-wireshark-network-analysis)
+* [Varun M Nair — Nmap & Wireshark Network Analysis](https://github.com/varunmnair95/nmap-wireshark-network-analysis)
+
 ---
 
 # 📸 Evidence
 
-The repository contains screenshots and supporting evidence for the lab setup and experiments.
-
-Evidence is used to show:
+Evidence includes:
 
 * Network configuration
-* Connectivity
+* Connectivity verification
 * Target listening ports
-* Nmap activity
+* Nmap scan results
+* Firewall status and controlled comparison
 * Wireshark packet captures
+* `.pcapng` files
 * Experiment observations
 
-The intention is to document the actual work performed rather than only describe the theory.
+The packet captures are retained as supporting evidence so the traffic can be reviewed independently of the screenshots.
 
 ---
 
@@ -206,8 +264,7 @@ nmap-wireshark-network-analysis/
 │   ├── 02-port-scanning/
 │   └── 03-service-detection/
 │
-└── collaboration/
-    └── .gitkeep
+└── collaboration-comparison-and-network-analysis/
 ```
 
 ---
@@ -228,7 +285,7 @@ nmap-wireshark-network-analysis/
 
 # 📌 Project Status
 
-**Project 1 — Nmap & Wireshark Network Analysis**
+**Nmap & Wireshark Network Analysis — Completed**
 
 The lab covers:
 
@@ -244,5 +301,6 @@ This project was performed in an isolated virtual lab using systems controlled b
 
 Nmap scanning and packet analysis should only be performed against systems where you have permission to test.
 
-This project is intended for **learning, practice, and portfolio development**.
+This project is intended for learning, practice, and portfolio development.
+
 
