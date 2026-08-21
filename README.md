@@ -80,96 +80,17 @@ The project is divided into three progressive experiments.
 
 The first experiment focuses on identifying an active host on the lab network.
 
-### Objective
-
-* Discover the Windows 11 target using Nmap
-* Confirm that the target is active
-* Observe the traffic generated during discovery
-* Correlate the Nmap result with packet-level evidence
-
-The experiment used:
-
-```bash
-nmap -sn 192.168.100.20
-```
-
-The Wireshark capture showed an **ARP request and ARP reply** between the two systems, with the MAC address observed in the ARP response matching the MAC address reported by Nmap.
-
-This demonstrates an important distinction:
-
-* **ARP** is used for local IP-to-MAC address resolution on the local network.
-* **ICMP** is another mechanism that can be used for host discovery, but it is not the only mechanism Nmap can use.
-
-
 ---
 
 ## [02 — Port Scanning](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis/tree/main/experiments/02-port-scanning)
 
 The second experiment examines TCP ports exposed by the Windows 11 target.
 
-### Objective
-
-* Identify open TCP ports
-* Understand TCP port scanning
-* Observe Nmap TCP probes
-* Correlate Nmap results with Wireshark traffic
-
-The experiment included a controlled Windows Firewall comparison.
-
-With the firewall enabled, the initial scan showed:
-
-```text
-1000 filtered TCP ports
-```
-
-After temporarily disabling the relevant firewall profile for validation, the same scan identified:
-
-```text
-135/tcp  open  msrpc
-139/tcp  open  netbios-ssn
-445/tcp  open  microsoft-ds
-```
-
-The remaining ports responded with TCP resets and were classified as closed.
-
-The firewall configuration was restored after the test.
-
 ---
 
 ## [03 — Service & Version Detection](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis/tree/main/experiments/03-service-detection)
 
 The third experiment builds on port scanning by examining the services associated with the discovered ports.
-
-### Objective
-
-* Identify services running on open TCP ports
-* Use Nmap service and version detection
-* Observe how firewall filtering affects service detection
-* Compare Nmap results with Wireshark traffic
-
-The investigated ports were:
-
-```text
-135/tcp
-139/tcp
-445/tcp
-```
-
-The service-detection scan used:
-
-```bash
-nmap -sV -p 135,139,445 192.168.100.20
-```
-
-With Windows Defender Firewall enabled, the investigated ports were reported as filtered.
-
-After temporarily disabling the firewall for controlled validation, Nmap received responses and identified:
-
-* `135/tcp` — Microsoft Windows RPC
-* `139/tcp` — Microsoft Windows netbios-ssn
-* `445/tcp` — microsoft-ds
-
-The firewall was restored after the test.
 
 ---
 
