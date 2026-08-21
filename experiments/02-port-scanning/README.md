@@ -122,8 +122,8 @@ The controlled comparison provides evidence that firewall filtering caused the o
 
 ### Controlled validation
 
-* `07-nmap-rescan.png` — Nmap result after temporarily disabling the Public firewall
-* `09-exp2-nmap-rescan.pcapng` — Packet capture from the controlled rescan
+* `06-nmap-rescan.png` — Nmap result after temporarily disabling the Public firewall
+* `07-exp2-nmap-rescan.pcapng` — Packet capture from the controlled rescan
 
 The intermediate firewall-change and Wireshark screenshots are not included as final evidence because the PCAPNG files provide the detailed packet-level evidence.
 
