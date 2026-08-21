@@ -39,7 +39,7 @@ The purpose of this analysis is to understand the network traffic behind Nmap re
 
 The baseline directory contains the network configuration, connectivity verification, listening-port information, and topology used for my experiments.
 
-📁 [Baseline & Topology](../baseline-and-topology/)
+📁 [Baseline & Topology](https://github.com/harikrishnan-rk/nmap-wireshark-network-analysis/tree/main/baseline-and-topology)
 
 ---
 
